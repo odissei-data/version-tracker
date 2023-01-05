@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${CONTAINER_NAME}
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+    command: [ "uvicorn", "main:app", "--reload", "--proxy-headers", "--host", "0.0.0.0", "--port", "${PORT}" ]
+    volumes:
+      - "./${APPLICATION_DIR}:/root/${APPLICATION_DIR}"
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb-data:
