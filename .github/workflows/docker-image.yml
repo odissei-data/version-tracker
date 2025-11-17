@@ -62,5 +62,8 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_PASSWORD }}
       - name: Push to dockerhub
         run: |
-          docker build . --file Dockerfile --tag fjodorvr/version-tracker:${{ env.version }}
+          docker build . --file Dockerfile \
+            -t fjodorvr/version-tracker:${{ env.version }} \
+            -t fjodorvr/version-tracker:latest
           docker push fjodorvr/version-tracker:${{ env.version }}
+          docker push fjodorvr/version-tracker:latest
