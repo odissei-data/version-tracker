@@ -3,6 +3,7 @@ import os
 
 from bson import ObjectId
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from pymongo import MongoClient
 
 from version import get_version
@@ -16,6 +17,15 @@ db = client.mydatabase
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": get_version()}
+
+
+# The driver checks MongoDB in the background (every 10 s by default);
+# this reads its latest result.
+@app.get("/ready")
+async def ready():
+    if not client.topology_description.has_writable_server():
+        return JSONResponse({"status": "not ready", "mongodb": "unreachable"}, 503)
+    return JSONResponse({"status": "ok", "mongodb": "ok"})
 
 
 @app.post("/store")
