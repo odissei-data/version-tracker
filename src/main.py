@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pymongo import MongoClient
 
-from version import get_version
+from version import get_image, get_version
 
 app = FastAPI()
 
@@ -16,7 +16,7 @@ db = client.mydatabase
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "version": get_version()}
+    return {"status": "ok", "version": get_version(), "image": get_image()}
 
 
 # The driver checks MongoDB in the background (every 10 s by default);
