@@ -5,10 +5,17 @@ from bson import ObjectId
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 
+from version import get_version
+
 app = FastAPI()
 
 client = MongoClient(os.environ["MONGO_URI"])
 db = client.mydatabase
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "version": get_version()}
 
 
 @app.post("/store")
